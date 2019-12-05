@@ -1,0 +1,29 @@
+version: '3.7'
+volumes: 
+  prometheus_data:
+  nodejs_data:
+
+services: 
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    ports: 
+      - 9090:9090
+    volumes: 
+      - prometheus_data:/prometheus
+    restart: on-failure
+  nodejs:
+    container_name: nodejs
+    image: msimou/nodejs
+    build: 
+      context: ./services
+      dockerfile: ./nodejs/deployments/nodejs.dockerfile
+    ports: 
+      - 8000:8000
+    environment: 
+      - PORT=8000
+    volumes: 
+      - type: bind
+        source: ./services/nodejs
+        target: /nodejs
+    restart:  on-failure
