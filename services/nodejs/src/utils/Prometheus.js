@@ -17,14 +17,13 @@ export const sumOfResponseTime = new Counter({
 })
  
 export const numOfRequestsMiddleware = metric => (req,res,next) => {
-    console.log('Middlewares: ', req.path)
     if(req.path !== '/metrics'){
         metric.inc(1)
     }
     next()
 }
 
-export const sumOfResponseTimeMiddleware = metric => responseTime((req,res,time) => metric.inc(time))
+export const sumOfResponseTimeMiddleware = metric => responseTime((req,res,time) => metric.inc(time / 1e3))
 
 
 export default {

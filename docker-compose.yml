@@ -11,6 +11,14 @@ networks:
         - subnet: 172.16.238.0/24
 
 services: 
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    ports: 
+      - 3000:3000
+    networks: 
+      - backend
+    restart: on-failure
   prometheus:
     container_name: prometheus
     image: prom/prometheus
@@ -21,8 +29,9 @@ services:
       - type: bind
         source: ./services/configs/prometheus.yml
         target: /etc/prometheus/prometheus.yml
-    networks: 
-      - backend
+    networks:
+      backend:
+        ipv4_address: 172.16.238.9
     restart: on-failure
   nodejs:
     container_name: nodejs

@@ -8,6 +8,7 @@ const app = express(),
 // middlewares
 app.use(promitheusMiddlewares.numbOfRequests)
 app.use(promitheusMiddlewares.sumOfResponseTime)
+
 app.get('/', (req,res)=> { 
     res.send('alive')
 })
