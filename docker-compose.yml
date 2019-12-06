@@ -3,6 +3,13 @@ volumes:
   prometheus_data:
   nodejs_data:
 
+networks: 
+  backend:
+    driver: bridge
+    ipam:
+      config: 
+        - subnet: 172.16.238.0/24
+
 services: 
   prometheus:
     container_name: prometheus
@@ -11,6 +18,11 @@ services:
       - 9090:9090
     volumes: 
       - prometheus_data:/prometheus
+      - type: bind
+        source: ./services/configs/prometheus.yml
+        target: /etc/prometheus/prometheus.yml
+    networks: 
+      - backend
     restart: on-failure
   nodejs:
     container_name: nodejs
@@ -26,4 +38,7 @@ services:
       - type: bind
         source: ./services/nodejs
         target: /nodejs
+    networks: 
+      backend:
+        ipv4_address: 172.16.238.10
     restart:  on-failure
