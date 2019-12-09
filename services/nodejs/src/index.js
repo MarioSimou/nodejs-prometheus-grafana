@@ -1,16 +1,30 @@
 import express from 'express'
-import {collectDefaultMetrics, register} from 'prom-client'
-import promitheusMiddlewares from './utils/Prometheus'
+import {collectDefaultMetrics, register, Summary, Histogram} from 'prom-client'
+import {
+    httpRequestsCounter,
+    httpRequestsDurationSummary
+} from './utils/Prometheus'
 
 const app = express(),
     port = process.env.PORT || 8000
 
-// middlewares
-app.use(promitheusMiddlewares.numbOfRequests)
-app.use(promitheusMiddlewares.sumOfResponseTime)
+app.use(httpRequestsCounter)
+app.use(httpRequestsDurationSummary)
 
 app.get('/', (req,res)=> { 
-    res.send('alive')
+    res.send('alive\n')
+})
+app.get("/ping", (req,res) => {
+    try {
+        const est = Math.random()
+        if (Math.random() < 0.1) {
+            throw new Error()
+        }
+
+        res.status(200).send("pong")
+    } catch(e){
+        res.status(400).send("pong")
+    }
 })
 
 // injects the register to /metrics
